@@ -1,3 +1,14 @@
+# Solution
+
+## Notes
+
+If I had assumed that data loss was acceptable (which, looking at the sensor data, seems reasonable), I would have approached this differntly. In particular, I would have looked at using UDP instead of TCP to transfer messages, and also omitting unnecessary fields (perhaps the time stamp) from the messages.
+
+Instead, I've assumed the acceptance test as the precise requirements. So all the messages need to be reproduced on the server, but order doesn't matter, and we need to keep the latency below 2 seconds, if possible. I'm also assuming that the body of the HTTP POST messages are receiving text compression, so I won't be focusing on the size of the serialized JSON string.
+
+My solution is then, to reduce the number of requests being sent by sending them in batches. This will reduce the number of bytes being sent by
+	1. sending fewer headers
+	2. allowing the text compression to compress more
 
 # Backend Developer Job Applicant Test - Node.js
 
