@@ -12,12 +12,20 @@ process.on('SIGTERM', function() {
 
 const server = http.createServer(function(req, res) {
   let body = []
-  req.on('data', body.push.bind(body))
+  req.on('data', (buffer) => body.push(buffer))
   req.on('end', () => {
     // just print to stdout
-    console.log(Buffer.concat(body).toString())
+    printArray(
+      JSON.parse(
+        Buffer.concat(body).toString()
+      )
+    )
     res.end()
   })
 })
+
+const printArray = (array) => array.forEach(
+  value => console.log(JSON.stringify(value))
+)
 
 server.listen(8080)
