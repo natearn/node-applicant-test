@@ -11,13 +11,16 @@ const message = {key: "value"}
 // event stream with long pause in the middle
 const longDelay = Kefir.concat([
   Kefir.interval(100,message).take(10),
-  Kefir.later(3000,message),
+  Kefir.later(6000,message),
   Kefir.interval(100,message).take(10)
 ])
 
 // copy the behaviour of transmit.js
 const runWith = (events) => {
-  const finished = events.debounce(2000)
+  const finished = Kefir.merge([
+    Kefir.later(3000), // in case transmit is never called
+    events
+  ]).debounce(2000) // no events for 2 seconds triggers the end
   return events
     .bufferWithTimeOrCount(1500)           // Flush every 1.5 seconds
     .filter((buffer) => buffer.length > 0) // Don't send empty messages
